@@ -34,4 +34,10 @@ public class MainActivityTests extends
 		assertNotNull("mPlayStreamingMusicExpList is null", mPlayStreamingMusicExpList);
 	}
 
+	public void testPlayMusicButton_labelText() {
+		final String expected = mMainActivity.getString(R.string.play_local_files);
+		final String actual = mPlayLocalMusicButton.getText().toString();
+		assertEquals(expected, actual);
+	}
+
 }
