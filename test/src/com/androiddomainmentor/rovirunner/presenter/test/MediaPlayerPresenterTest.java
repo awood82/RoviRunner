@@ -1,22 +1,32 @@
 package com.androiddomainmentor.rovirunner.presenter.test;
 
+import java.io.FileDescriptor;
+import java.io.IOException;
+
 import org.mockito.Mockito;
 
+import android.content.Context;
+import android.content.res.AssetFileDescriptor;
+import android.media.MediaPlayer.OnPreparedListener;
 import android.test.AndroidTestCase;
-import android.test.mock.MockContext;
+import android.test.suitebuilder.annotation.Suppress;
 
 import com.androiddomainmentor.rovirunner.model.IRoviRunnerMediaPlayer;
 import com.androiddomainmentor.rovirunner.presenter.IMediaPlayerPresenter;
 import com.androiddomainmentor.rovirunner.presenter.impl.MediaPlayerPresenter;
 import com.androiddomainmentor.rovirunner.view.IMediaPlayerView;
 
+// note:  test methods must be named with a "test" prefix, e.g., "testThisOrThat", 
+// in order for it to be picked up as a test.
+
 public class MediaPlayerPresenterTest extends AndroidTestCase
 {
-    private IMediaPlayerPresenter m_presenter = null;
-    private IMediaPlayerView m_view = null;
-    private IRoviRunnerMediaPlayer m_player = null;
-    
-    // this ctor is required by junit...  see
+    private IMediaPlayerPresenter m_presenter;
+    private IMediaPlayerView m_view;
+    private IRoviRunnerMediaPlayer m_player;
+    private Context m_context;
+
+    // this ctor is required by junit... see
     // http://developer.android.com/tools/testing/testing_eclipse.html
     public MediaPlayerPresenterTest()
     {
@@ -24,20 +34,52 @@ public class MediaPlayerPresenterTest extends AndroidTestCase
     }
     
     @Override
-    public void setUp()
+    public void setUp() throws Exception
     {
+        super.setUp();
+
         // set up mocks
         m_view = Mockito.mock( IMediaPlayerView.class );
         m_player = Mockito.mock( IRoviRunnerMediaPlayer.class );
-        Mockito.doReturn( m_player ).when( m_presenter ).makeNewMediaPlayer();
-        
+        m_context = Mockito.mock( Context.class );
+
         // this is what we're testing against
-        m_presenter = Mockito.spy( new MediaPlayerPresenter( m_view, 
-                                                             new MockContext() ) );
+        m_presenter = Mockito.spy( new MediaPlayerPresenter( m_view,
+                                                             m_context ) );
+
+        // set up mock player
+        Mockito.doReturn( m_player )
+               .when( m_presenter )
+               .makeNewMediaPlayer();
     }
     
-    public void blah()
+    public void testSetUpMediaPlayer()
     {
-        assertTrue( true );
+        m_presenter.setUpMediaPlayer();
+        
+        Mockito.verify( m_presenter ).makeNewMediaPlayer();
+        Mockito.verify( m_player ).setOnPreparedListener( Mockito.any( OnPreparedListener.class ) );
+    }
+
+    @Suppress // TODO [2013-09-29 KW] just trying some stuff out, there must be an easier way to do this...
+    public void testPlayRandomSong() throws IllegalArgumentException, IllegalStateException, IOException
+    {
+        AssetFileDescriptor afd = Mockito.mock( AssetFileDescriptor.class );
+        Mockito.doReturn( afd ).when( m_presenter ).getRandomSongFileDescriptor();
+        Mockito.doNothing().when( m_player ).prepareAsync();
+        
+        m_presenter.playRandomSong();
+
+        Mockito.verify( m_player )
+               .setDataSource( (FileDescriptor)Mockito.any(),
+                               Mockito.anyLong(),
+                               Mockito.anyLong() );
+        Mockito.verify( m_player )
+               .prepareAsync();
+
+        Mockito.verify( m_view )
+               .setArtistText( Mockito.anyString() );
+        Mockito.verify( m_view )
+               .setSongText( Mockito.anyString() );
     }
 }

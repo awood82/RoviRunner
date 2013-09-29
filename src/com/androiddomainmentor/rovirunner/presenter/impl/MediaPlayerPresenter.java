@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
@@ -16,8 +17,8 @@ import com.androiddomainmentor.rovirunner.presenter.IMediaPlayerPresenter;
 import com.androiddomainmentor.rovirunner.view.IMediaPlayerView;
 
 /*
- * this class is responsible for getting files to play, and should contain
- * logic for picking songs based on target BPM.
+ * this class is responsible for getting files to play, and should contain logic
+ * for picking songs based on target BPM.
  */
 public class MediaPlayerPresenter implements
                                  IMediaPlayerPresenter,
@@ -34,15 +35,21 @@ public class MediaPlayerPresenter implements
     {
         m_view = mediaPlayerActivity;
         m_context = context;
-        setUpMediaPlayer();
     }
 
-    private void setUpMediaPlayer()
+    @Override
+    public void setUpMediaPlayer()
     {
-        m_mediaPlayer = new RoviRunnerMediaPlayer( m_context );
+        m_mediaPlayer = makeNewMediaPlayer();
         m_mediaPlayer.setOnPreparedListener( this );
         m_mediaPlayer.setOnCompletionListener( this );
         m_mediaPlayer.setOnErrorListener( this );
+    }
+
+    @Override
+    public IRoviRunnerMediaPlayer makeNewMediaPlayer()
+    {
+        return new RoviRunnerMediaPlayer();
     }
 
     @Override
@@ -68,29 +75,53 @@ public class MediaPlayerPresenter implements
     public void onCompletion( MediaPlayer mp )
     {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void playRandomSong()
     {
-        // TODO [2013-09-21 KW]:  for now, just play this song
-        AssetFileDescriptor afd;
+        AssetFileDescriptor afd = getRandomSongFileDescriptor();
         try
         {
-            afd = m_context.getAssets()
-                           .openFd( "get_lucky_30s.mp3" );
             m_mediaPlayer.setDataSource( afd.getFileDescriptor(),
                                          afd.getStartOffset(),
                                          afd.getLength() );
-            m_mediaPlayer.prepareAsync();
+        } catch ( IllegalArgumentException e )
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch ( IllegalStateException e )
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         } catch ( IOException e )
         {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
+        m_mediaPlayer.prepareAsync();
+
         m_view.setArtistText( "zach kim" );
         m_view.setSongText( "robot dance" );
+    }
+
+    @Override
+    public AssetFileDescriptor getRandomSongFileDescriptor()
+    {
+        AssetFileDescriptor afd = null;
+        try
+        {
+            AssetManager assetMgr = m_context.getAssets();
+            // TODO [2013-09-28 KW]:  pick a random asset from assetMgr.list( ... )?
+            // TODO [2013-09-21 KW]:  for now, just pick this song
+            afd = assetMgr.openFd( "get_lucky_30s.mp3" );
+        } catch ( IOException e )
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return afd;
     }
 }

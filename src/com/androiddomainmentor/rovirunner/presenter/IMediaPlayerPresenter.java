@@ -1,11 +1,20 @@
 package com.androiddomainmentor.rovirunner.presenter;
 
+import com.androiddomainmentor.rovirunner.model.IRoviRunnerMediaPlayer;
+
+import android.content.res.AssetFileDescriptor;
 import android.widget.MediaController.MediaPlayerControl;
 
 public interface IMediaPlayerPresenter
 {
 
-    public MediaPlayerControl getMediaPlayerControl();
+    MediaPlayerControl getMediaPlayerControl();
 
-    public void playRandomSong();
+    void playRandomSong();
+
+    IRoviRunnerMediaPlayer makeNewMediaPlayer();
+
+    AssetFileDescriptor getRandomSongFileDescriptor();
+
+    void setUpMediaPlayer();
 }

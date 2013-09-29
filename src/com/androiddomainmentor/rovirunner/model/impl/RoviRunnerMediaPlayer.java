@@ -3,8 +3,6 @@ package com.androiddomainmentor.rovirunner.model.impl;
 import java.io.FileDescriptor;
 import java.io.IOException;
 
-import android.content.Context;
-import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 
 import com.androiddomainmentor.rovirunner.model.IRoviRunnerMediaPlayer;
@@ -12,11 +10,9 @@ import com.androiddomainmentor.rovirunner.model.IRoviRunnerMediaPlayer;
 public class RoviRunnerMediaPlayer implements IRoviRunnerMediaPlayer
 {
     private MediaPlayer m_player = null;
-    private Context m_context;
 
-    public RoviRunnerMediaPlayer( Context context )
+    public RoviRunnerMediaPlayer()
     {
-        m_context = context;
         m_player = new MediaPlayer();
     }
     
