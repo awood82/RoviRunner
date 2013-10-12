@@ -7,4 +7,6 @@ public interface IMediaPlayerView
 
     void setSongText( String songName );
 
+    void showMediaController();
+
 }

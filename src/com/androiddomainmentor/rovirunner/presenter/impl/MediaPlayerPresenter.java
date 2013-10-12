@@ -1,7 +1,6 @@
 package com.androiddomainmentor.rovirunner.presenter.impl;
 
 import java.io.IOException;
-
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
@@ -10,7 +9,6 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.widget.MediaController.MediaPlayerControl;
-
 import com.androiddomainmentor.rovirunner.model.IRoviRunnerMediaPlayer;
 import com.androiddomainmentor.rovirunner.model.impl.RoviRunnerMediaPlayer;
 import com.androiddomainmentor.rovirunner.presenter.IMediaPlayerPresenter;
@@ -21,7 +19,8 @@ import com.androiddomainmentor.rovirunner.view.IMediaPlayerView;
  * for picking songs based on target BPM.
  */
 public class MediaPlayerPresenter implements
-                                 IMediaPlayerPresenter,
+                                 IMediaPlayerPresenter, 
+                                 MediaPlayerControl,
                                  OnPreparedListener,
                                  OnErrorListener,
                                  OnCompletionListener
@@ -55,13 +54,14 @@ public class MediaPlayerPresenter implements
     @Override
     public MediaPlayerControl getMediaPlayerControl()
     {
-        return m_mediaPlayer;
+        return this;
     }
 
     @Override
     public void onPrepared( MediaPlayer mp )
     {
         mp.start();
+        m_view.showMediaController();
     }
 
     @Override
@@ -74,8 +74,7 @@ public class MediaPlayerPresenter implements
     @Override
     public void onCompletion( MediaPlayer mp )
     {
-        // TODO Auto-generated method stub
-
+        mp.pause();
     }
 
     @Override
@@ -123,5 +122,72 @@ public class MediaPlayerPresenter implements
         }
 
         return afd;
+    }
+
+    @Override
+    public boolean canPause()
+    {
+        return ( m_mediaPlayer.isPlaying() ) ? true : false;
+    }
+
+    @Override
+    public boolean canSeekBackward()
+    {
+        return ( m_mediaPlayer.getCurrentPosition() > 0 ) ? true : false;
+    }
+
+    @Override
+    public boolean canSeekForward()
+    {
+        return ( m_mediaPlayer.getCurrentPosition() < m_mediaPlayer.getDuration() ) ? true : false;
+    }
+
+    @Override
+    public int getBufferPercentage()
+    {
+        return 100;
+    }
+
+    @Override
+    public int getCurrentPosition()
+    {
+        return m_mediaPlayer.getCurrentPosition();
+    }
+
+    @Override
+    public int getDuration()
+    {
+        return m_mediaPlayer.getDuration();
+    }
+
+    @Override
+    public boolean isPlaying()
+    {
+        return m_mediaPlayer.isPlaying();
+    }
+
+    @Override
+    public void pause()
+    {
+        m_mediaPlayer.pause();
+    }
+
+    @Override
+    public void seekTo( int pos )
+    {
+        m_mediaPlayer.seekTo( pos );
+    }
+
+    @Override
+    public void start()
+    {
+        m_mediaPlayer.start();
+    }
+
+    @Override
+    public void lifecycleStop()
+    {
+        m_mediaPlayer.stop();
+        m_mediaPlayer.release();
     }
 }

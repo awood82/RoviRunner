@@ -2,9 +2,7 @@ package com.androiddomainmentor.rovirunner.model.impl;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
-
 import android.media.MediaPlayer;
-
 import com.androiddomainmentor.rovirunner.model.IRoviRunnerMediaPlayer;
 
 public class RoviRunnerMediaPlayer implements IRoviRunnerMediaPlayer
@@ -32,30 +30,6 @@ public class RoviRunnerMediaPlayer implements IRoviRunnerMediaPlayer
     public void setOnErrorListener( MediaPlayer.OnErrorListener listener )
     {
         m_player.setOnErrorListener( listener );
-    }
-
-    @Override
-    public boolean canPause()
-    {
-        return m_player.isPlaying();
-    }
-
-    @Override
-    public boolean canSeekBackward()
-    {
-        return ( m_player.getCurrentPosition() > 0 );
-    }
-
-    @Override
-    public boolean canSeekForward()
-    {
-        return ( m_player.getCurrentPosition() < m_player.getDuration() );
-    }
-
-    @Override
-    public int getBufferPercentage()
-    {
-        return 100;
     }
 
     @Override
@@ -125,5 +99,17 @@ public class RoviRunnerMediaPlayer implements IRoviRunnerMediaPlayer
     public void prepareAsync()
     {
         m_player.prepareAsync();
+    }
+
+    @Override
+    public void stop()
+    {
+        m_player.stop();
+    }
+
+    @Override
+    public void release()
+    {
+        m_player.release();
     }
 }

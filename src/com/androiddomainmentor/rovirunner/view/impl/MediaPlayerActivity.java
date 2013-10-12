@@ -2,10 +2,9 @@ package com.androiddomainmentor.rovirunner.view.impl;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.widget.MediaController;
 import android.widget.TextView;
-
 import com.androiddomainmentor.rovirunner.R;
+import com.androiddomainmentor.rovirunner.model.impl.MediaControllerNoHide;
 import com.androiddomainmentor.rovirunner.presenter.IMediaPlayerPresenter;
 import com.androiddomainmentor.rovirunner.presenter.impl.MediaPlayerPresenter;
 import com.androiddomainmentor.rovirunner.view.IMediaPlayerView;
@@ -13,7 +12,7 @@ import com.androiddomainmentor.rovirunner.view.IMediaPlayerView;
 public class MediaPlayerActivity extends Activity implements IMediaPlayerView
 {
     private IMediaPlayerPresenter m_presenter;
-    private MediaController m_mediaController;
+    private MediaControllerNoHide m_mediaController;
     private TextView m_artistText;
     private TextView m_songText;
 
@@ -30,13 +29,18 @@ public class MediaPlayerActivity extends Activity implements IMediaPlayerView
         setContentView( R.layout.mediaplayer_view );
 
         // assign layout elements
-        m_mediaController = (MediaController)findViewById( R.id.media_controller );
+        m_mediaController = new MediaControllerNoHide( this );
         m_artistText = (TextView)findViewById( R.id.artist_text_view );
         m_songText = (TextView)findViewById( R.id.song_text_view );
 
-        // hook up media player to media control
+        // hook up mediacontroller to to mediaplayercontrol widget
         m_mediaController.setMediaPlayer( m_presenter.getMediaPlayerControl() );
-        m_mediaController.setAnchorView( getCurrentFocus() );
+        // TODO [2013-10-11 KW]:  figure out why layout can't be used
+        // TODO [2013-10-11 KW]:  figure out why seek bar isn't a fixed size upon start of playback
+        m_mediaController.setAnchorView( findViewById( R.id.mediaplayer_view ) );
+        
+        // set up media player
+        m_presenter.setUpMediaPlayer();
         
         // TODO [2013-09-21 KW]:  for now, play a song
         m_presenter.playRandomSong();
@@ -53,7 +57,13 @@ public class MediaPlayerActivity extends Activity implements IMediaPlayerView
     {
         m_songText.setText( songName );
     }
+    
 
+    @Override
+    public void showMediaController()
+    {
+        m_mediaController.show();
+    }
     
     // TODO [2013-09-18 KW]:  implement lifecycle events
     @Override
@@ -96,6 +106,8 @@ public class MediaPlayerActivity extends Activity implements IMediaPlayerView
     {
         // TODO Auto-generated method stub
         super.onStop();
+        m_mediaController.hide();
+        m_presenter.lifecycleStop();
     }
 
 }

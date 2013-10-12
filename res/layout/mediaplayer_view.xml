@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mediaplayer_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="2dp" >
@@ -24,6 +25,7 @@
         android:layout_centerHorizontal="true"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
+    <!-- 
     <MediaController
         android:id="@+id/media_controller"
         android:layout_width="match_parent"
@@ -32,5 +34,6 @@
         android:layout_below="@id/artist_text_view" 
         >
     </MediaController>
+     -->
 
 </RelativeLayout>

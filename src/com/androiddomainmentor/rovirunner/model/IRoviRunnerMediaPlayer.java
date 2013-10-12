@@ -2,25 +2,35 @@ package com.androiddomainmentor.rovirunner.model;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
+import android.media.MediaPlayer;
 
-import android.media.MediaPlayer.OnCompletionListener;
-import android.media.MediaPlayer.OnErrorListener;
-import android.media.MediaPlayer.OnPreparedListener;
-import android.widget.MediaController.MediaPlayerControl;
-
-public interface IRoviRunnerMediaPlayer extends MediaPlayerControl
+public interface IRoviRunnerMediaPlayer
 {
+    public abstract void setOnPreparedListener( MediaPlayer.OnPreparedListener listener );
 
-    void setOnPreparedListener( OnPreparedListener listener );
+    public abstract void setOnCompletionListener( MediaPlayer.OnCompletionListener listener );
 
-    void setOnCompletionListener( OnCompletionListener listener );
+    public abstract void setOnErrorListener( MediaPlayer.OnErrorListener listener );
 
-    void setOnErrorListener( OnErrorListener listener );
+    public abstract int getCurrentPosition();
 
-    void setDataSource( FileDescriptor fileDescriptor,
-                        long startOffset,
-                        long length ) throws IllegalArgumentException, IllegalStateException, IOException;
+    public abstract int getDuration();
 
-    void prepareAsync();
+    public abstract boolean isPlaying();
 
+    public abstract void pause();
+
+    public abstract void seekTo( int pos );
+
+    public abstract void start();
+
+    public abstract void setDataSource( FileDescriptor fileDescriptor,
+                                        long startOffset,
+                                        long length ) throws IllegalArgumentException, IllegalStateException, IOException;
+
+    public abstract void prepareAsync();
+
+    public abstract void stop();
+
+    public abstract void release();
 }
