@@ -41,9 +41,6 @@ public class MediaPlayerActivity extends Activity implements IMediaPlayerView
         
         // set up media player
         m_presenter.setUpMediaPlayer();
-        
-        // TODO [2013-09-21 KW]:  for now, play a song
-        m_presenter.playRandomSong();
     }
 
     @Override
@@ -69,8 +66,11 @@ public class MediaPlayerActivity extends Activity implements IMediaPlayerView
     @Override
     protected void onDestroy()
     {
-        // TODO Auto-generated method stub
         super.onDestroy();
+        
+        m_mediaController.setMediaPlayer(null);
+        m_mediaController = null;
+        m_presenter.lifecycleStop();
     }
 
     @Override
@@ -78,6 +78,8 @@ public class MediaPlayerActivity extends Activity implements IMediaPlayerView
     {
         // TODO Auto-generated method stub
         super.onPause();
+        
+        m_mediaController.hide();
     }
 
     @Override
@@ -92,22 +94,21 @@ public class MediaPlayerActivity extends Activity implements IMediaPlayerView
     {
         // TODO Auto-generated method stub
         super.onResume();
+        
+        // TODO [2013-09-21 KW]:  for now, play a song
+        m_presenter.playRandomSong();
     }
 
     @Override
     protected void onStart()
     {
-        // TODO Auto-generated method stub
         super.onStart();
     }
 
     @Override
     protected void onStop()
     {
-        // TODO Auto-generated method stub
         super.onStop();
-        m_mediaController.hide();
-        m_presenter.lifecycleStop();
     }
 
 }

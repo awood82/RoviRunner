@@ -80,6 +80,11 @@ public class MediaPlayerPresenter implements
     @Override
     public void playRandomSong()
     {
+        if (m_mediaPlayer.isPlaying())
+        {
+            return;
+        }
+        
         AssetFileDescriptor afd = getRandomSongFileDescriptor();
         try
         {
