@@ -16,4 +16,9 @@ public class MediaControllerNoHide extends MediaController
     {
         // do nothing
     }
+
+    public void actuallyHide()
+    {
+        super.hide();
+    }
 }

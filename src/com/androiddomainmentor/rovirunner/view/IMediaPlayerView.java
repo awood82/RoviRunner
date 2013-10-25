@@ -1,5 +1,6 @@
 package com.androiddomainmentor.rovirunner.view;
 
+
 public interface IMediaPlayerView
 {
 
@@ -8,5 +9,4 @@ public interface IMediaPlayerView
     void setSongText( String songName );
 
     void showMediaController();
-
 }

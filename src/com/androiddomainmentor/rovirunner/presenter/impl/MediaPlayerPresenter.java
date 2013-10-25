@@ -2,6 +2,7 @@ package com.androiddomainmentor.rovirunner.presenter.impl;
 
 import java.io.IOException;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.media.MediaPlayer;
@@ -28,21 +29,26 @@ public class MediaPlayerPresenter implements
     private IMediaPlayerView m_view = null;
     private Context m_context = null;
     private IRoviRunnerMediaPlayer m_mediaPlayer = null;
+    private SharedPreferences m_prefs = null;
 
     public MediaPlayerPresenter( IMediaPlayerView mediaPlayerActivity,
-                                 Context context )
+                                 Context context, 
+                                 SharedPreferences prefs )
     {
         m_view = mediaPlayerActivity;
         m_context = context;
+        m_prefs = prefs;
     }
 
-    @Override
-    public void setUpMediaPlayer()
+    private void setUpMediaPlayer()
     {
-        m_mediaPlayer = makeNewMediaPlayer();
-        m_mediaPlayer.setOnPreparedListener( this );
-        m_mediaPlayer.setOnCompletionListener( this );
-        m_mediaPlayer.setOnErrorListener( this );
+        if ( null == m_mediaPlayer )
+        {
+            m_mediaPlayer = makeNewMediaPlayer();
+            m_mediaPlayer.setOnPreparedListener( this );
+            m_mediaPlayer.setOnCompletionListener( this );
+            m_mediaPlayer.setOnErrorListener( this );
+        }
     }
 
     @Override
@@ -60,6 +66,10 @@ public class MediaPlayerPresenter implements
     @Override
     public void onPrepared( MediaPlayer mp )
     {
+        // restore last played position before playback
+        int lastPlayedSongPosition = m_prefs.getInt( "lastPlayedSongPosition", 0 );
+        mp.seekTo( lastPlayedSongPosition );
+
         mp.start();
         m_view.showMediaController();
     }
@@ -78,14 +88,28 @@ public class MediaPlayerPresenter implements
     }
 
     @Override
-    public void playRandomSong()
+    public void playSong( String song )
     {
-        if (m_mediaPlayer.isPlaying())
+        if ( m_mediaPlayer.isPlaying() )
         {
             return;
         }
         
-        AssetFileDescriptor afd = getRandomSongFileDescriptor();
+        AssetFileDescriptor afd = null;
+        if ( null == song )
+        {
+            afd = getRandomSongFileDescriptor();
+        }
+        else
+        {
+            afd = getSongFileDescriptor( song );
+        }
+        
+        if ( null == afd )
+        {
+            // TODO [2013-10-24 KW] does this mean there are no songs?
+        }
+        
         try
         {
             m_mediaPlayer.setDataSource( afd.getFileDescriptor(),
@@ -106,6 +130,7 @@ public class MediaPlayerPresenter implements
         }
         m_mediaPlayer.prepareAsync();
 
+        // TODO [2013-10-24 KW] get actual artist and song name
         m_view.setArtistText( "zach kim" );
         m_view.setSongText( "robot dance" );
     }
@@ -113,18 +138,52 @@ public class MediaPlayerPresenter implements
     @Override
     public AssetFileDescriptor getRandomSongFileDescriptor()
     {
+        // TODO [2013-09-21 KW]:  for now, just pick this song
+        String filename = "get_lucky_30s.mp3";
         AssetFileDescriptor afd = null;
         try
         {
             AssetManager assetMgr = m_context.getAssets();
             // TODO [2013-09-28 KW]:  pick a random asset from assetMgr.list( ... )?
-            // TODO [2013-09-21 KW]:  for now, just pick this song
-            afd = assetMgr.openFd( "get_lucky_30s.mp3" );
+            afd = assetMgr.openFd( filename );
         } catch ( IOException e )
         {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        
+        // TODO [2013-10-24 KW] I'm putting this here to demonstrate that we need to 
+        // store the song filename in preferences every time a new one is played.
+        SharedPreferences.Editor editor = m_prefs.edit();
+        editor.putString( "lastPlayedSong", filename );
+
+        // commit edits
+        editor.commit();
+
+        return afd;
+    }
+    
+    @Override
+    public AssetFileDescriptor getSongFileDescriptor( String songFilename )
+    {
+        AssetFileDescriptor afd = null;
+        try
+        {
+            AssetManager assetMgr = m_context.getAssets();
+            afd = assetMgr.openFd( songFilename );
+        } catch ( IOException e )
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        // this is going to be the last played song
+        // TODO [2013-10-24 KW] probably should go into playSong() instead?
+        SharedPreferences.Editor editor = m_prefs.edit();
+        editor.putString( "lastPlayedSong", songFilename );
+
+        // commit edits
+        editor.commit();
 
         return afd;
     }
@@ -188,11 +247,52 @@ public class MediaPlayerPresenter implements
     {
         m_mediaPlayer.start();
     }
+    
+    @Override
+    public void lifecycleStart()
+    {
+        setUpMediaPlayer();
+    }
 
     @Override
     public void lifecycleStop()
     {
+        // store current song position
+        SharedPreferences.Editor editor = m_prefs.edit();
+        int currentPosition = m_mediaPlayer.getCurrentPosition();
+        // we don't want to resume at the end of the song on next start if we're within 1 second of the end
+        int duration = m_mediaPlayer.getDuration();
+        if ( currentPosition > duration - 1000)
+        {
+            currentPosition = 0;
+        }
+        editor.putInt( "lastPlayedSongPosition", currentPosition );
+ 
+        // commit edits
+        editor.commit();
+
         m_mediaPlayer.stop();
         m_mediaPlayer.release();
+        m_mediaPlayer = null;
+    }
+    
+    @Override
+    public void lifecycleDestroy()
+    {
+        
+    }
+
+    @Override
+    public void lifecyclePause()
+    {
+        m_mediaPlayer.pause();
+    }
+
+    @Override
+    public void lifecycleResume()
+    {
+        String lastPlayedSong = m_prefs.getString( "lastPlayedSong", null );
+
+        playSong( lastPlayedSong );
     }
 }

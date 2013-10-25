@@ -6,15 +6,23 @@ import com.androiddomainmentor.rovirunner.model.IRoviRunnerMediaPlayer;
 
 public interface IMediaPlayerPresenter
 {
-    void playRandomSong();
-
     IRoviRunnerMediaPlayer makeNewMediaPlayer();
-
-    AssetFileDescriptor getRandomSongFileDescriptor();
-
-    void setUpMediaPlayer();
 
     MediaPlayerControl getMediaPlayerControl();
 
     void lifecycleStop();
+
+    void lifecyclePause();
+
+    void lifecycleStart();
+
+    void lifecycleDestroy();
+
+    void lifecycleResume();
+
+    void playSong( String song );
+
+    AssetFileDescriptor getRandomSongFileDescriptor();
+
+    AssetFileDescriptor getSongFileDescriptor( String songFilename );
 }

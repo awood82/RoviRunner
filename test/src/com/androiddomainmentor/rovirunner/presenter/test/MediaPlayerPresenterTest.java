@@ -2,15 +2,13 @@ package com.androiddomainmentor.rovirunner.presenter.test;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
-
 import org.mockito.Mockito;
-
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.Suppress;
-
 import com.androiddomainmentor.rovirunner.model.IRoviRunnerMediaPlayer;
 import com.androiddomainmentor.rovirunner.presenter.IMediaPlayerPresenter;
 import com.androiddomainmentor.rovirunner.presenter.impl.MediaPlayerPresenter;
@@ -25,6 +23,7 @@ public class MediaPlayerPresenterTest extends AndroidTestCase
     private IMediaPlayerView m_view;
     private IRoviRunnerMediaPlayer m_player;
     private Context m_context;
+    private SharedPreferences m_prefs;
 
     // this ctor is required by junit... see
     // http://developer.android.com/tools/testing/testing_eclipse.html
@@ -42,10 +41,12 @@ public class MediaPlayerPresenterTest extends AndroidTestCase
         m_view = Mockito.mock( IMediaPlayerView.class );
         m_player = Mockito.mock( IRoviRunnerMediaPlayer.class );
         m_context = Mockito.mock( Context.class );
+        m_prefs = Mockito.mock( SharedPreferences.class );
 
         // this is what we're testing against
         m_presenter = Mockito.spy( new MediaPlayerPresenter( m_view,
-                                                             m_context ) );
+                                                             m_context, 
+                                                             m_prefs ) );
 
         // set up mock player
         Mockito.doReturn( m_player )
@@ -53,9 +54,9 @@ public class MediaPlayerPresenterTest extends AndroidTestCase
                .makeNewMediaPlayer();
     }
     
-    public void testSetUpMediaPlayer()
+    public void testLifecycleStart()
     {
-        m_presenter.setUpMediaPlayer();
+        m_presenter.lifecycleStart();
         
         Mockito.verify( m_presenter ).makeNewMediaPlayer();
         Mockito.verify( m_player ).setOnPreparedListener( Mockito.any( OnPreparedListener.class ) );
@@ -68,7 +69,7 @@ public class MediaPlayerPresenterTest extends AndroidTestCase
         Mockito.doReturn( afd ).when( m_presenter ).getRandomSongFileDescriptor();
         Mockito.doNothing().when( m_player ).prepareAsync();
         
-        m_presenter.playRandomSong();
+        m_presenter.playSong( null );
 
         Mockito.verify( m_player )
                .setDataSource( (FileDescriptor)Mockito.any(),
