@@ -30,7 +30,7 @@ public class MediaPlayerPresenter implements
     private Context m_context = null;
     private IRoviRunnerMediaPlayer m_mediaPlayer = null;
     private SharedPreferences m_prefs = null;
-
+    
     public MediaPlayerPresenter( IMediaPlayerView mediaPlayerActivity,
                                  Context context, 
                                  SharedPreferences prefs )

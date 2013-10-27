@@ -2,9 +2,12 @@ package com.androiddomainmentor.rovirunner.view.impl;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.widget.MediaController;
 import android.widget.TextView;
+
 import com.androiddomainmentor.rovirunner.R;
-import com.androiddomainmentor.rovirunner.model.impl.MediaControllerNoHide;
 import com.androiddomainmentor.rovirunner.presenter.IMediaPlayerPresenter;
 import com.androiddomainmentor.rovirunner.presenter.impl.MediaPlayerPresenter;
 import com.androiddomainmentor.rovirunner.view.IMediaPlayerView;
@@ -12,7 +15,7 @@ import com.androiddomainmentor.rovirunner.view.IMediaPlayerView;
 public class MediaPlayerActivity extends Activity implements IMediaPlayerView
 {
     private IMediaPlayerPresenter m_presenter = null;
-    private MediaControllerNoHide m_mediaController;
+    private MediaController m_mediaController;
     private TextView m_artistText;
     private TextView m_songText;
 
@@ -45,7 +48,7 @@ public class MediaPlayerActivity extends Activity implements IMediaPlayerView
     @Override
     public void showMediaController()
     {
-        m_mediaController.show();
+        m_mediaController.show( 0 );
     }
     
     // TODO [2013-09-18 KW]:  implement lifecycle events
@@ -95,7 +98,7 @@ public class MediaPlayerActivity extends Activity implements IMediaPlayerView
         
         if ( null == m_mediaController )
         {
-            m_mediaController = new MediaControllerNoHide( this );
+            m_mediaController = new MediaController( this );
 
             // hook up mediacontroller to to mediaplayercontrol widget
             m_mediaController.setMediaPlayer( m_presenter.getMediaPlayerControl() );
@@ -114,8 +117,45 @@ public class MediaPlayerActivity extends Activity implements IMediaPlayerView
         super.onStop();
 
         m_presenter.lifecycleStop();
-        m_mediaController.actuallyHide();
-        // m_mediaController.setMediaPlayer(null);
+        m_mediaController.hide();
         m_mediaController = null;
+    }
+    
+    // handle touch event by toggling media controls
+    @Override
+    public boolean onTouchEvent( MotionEvent ev )
+    {
+        if (    MotionEvent.ACTION_UP == ev.getAction() 
+             && m_mediaController != null )
+        {
+            toggleMediaControlsVisiblity();
+        }
+        return false;
+    }
+    
+    private void toggleMediaControlsVisiblity()
+    {
+        if ( m_mediaController.isShowing() )
+        {
+            m_mediaController.hide();
+        }
+        else
+        {
+            m_mediaController.show( 0 );
+        }
+    }
+    
+    // pop activity when back is pressed, regardless 
+    // of whether media controls are showing or not
+    // http://stackoverflow.com/questions/6051825/android-back-button-and-mediacontroller
+    @Override
+    public boolean dispatchKeyEvent( KeyEvent event )
+    {
+        if ( event.getKeyCode() == KeyEvent.KEYCODE_BACK )
+        {
+            onBackPressed();
+        }
+        
+        return super.dispatchKeyEvent( event );
     }
 }
