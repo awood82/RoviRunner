@@ -28,6 +28,11 @@
             android:label="@string/media_player_name" 
             android:configChanges="orientation|screenSize|keyboard|keyboardHidden">
         </activity>
+        <activity
+            android:name="com.androiddomainmentor.rovirunner.view.impl.MediaPlaylistActivity"
+            android:label="@string/media_playlist_name" 
+            android:configChanges="orientation|screenSize|keyboard|keyboardHidden">
+        </activity>
     </application>
 
 </manifest>

@@ -10,5 +10,6 @@
     <string name="song_text">Song name</string>
     <string name="artist_text">Artist</string>
     <string name="media_player_name">Rovi Runner Media Player</string>
+    <string name="media_playlist_name">Local Audio Files</string>
 
 </resources>

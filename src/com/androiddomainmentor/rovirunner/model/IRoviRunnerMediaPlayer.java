@@ -24,6 +24,7 @@ public interface IRoviRunnerMediaPlayer
 
     public abstract void start();
 
+    // TODO [2013-10-29 KW] need to expose different API for setting source via path
     public abstract void setDataSource( FileDescriptor fileDescriptor,
                                         long startOffset,
                                         long length ) throws IllegalArgumentException, IllegalStateException, IOException;

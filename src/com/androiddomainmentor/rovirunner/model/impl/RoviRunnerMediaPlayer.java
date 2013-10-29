@@ -66,23 +66,6 @@ public class RoviRunnerMediaPlayer implements IRoviRunnerMediaPlayer
     public void start()
     {
         m_player.start();
-        /*
-        AssetFileDescriptor afd;
-        try
-        {
-            afd = m_context.getAssets()
-                           .openFd( "get_lucky_30s.mp3" );
-            m_player.setDataSource( afd.getFileDescriptor(),
-                                    afd.getStartOffset(),
-                                    afd.getLength() );
-            m_player.prepare();
-            m_player.start();
-        } catch ( IOException e )
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        */
     }
 
     @Override

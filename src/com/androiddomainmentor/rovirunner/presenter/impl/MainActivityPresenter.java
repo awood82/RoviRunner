@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import com.androiddomainmentor.rovirunner.R;
 import com.androiddomainmentor.rovirunner.model.IStreamingSourcesManager;
-import com.androiddomainmentor.rovirunner.model.impl.RoviRunnerMediaPlayer;
 import com.androiddomainmentor.rovirunner.model.impl.StreamingSourcesManager;
 import com.androiddomainmentor.rovirunner.presenter.IMainActivityPresenter;
 import com.androiddomainmentor.rovirunner.view.IMainActivityView;
@@ -24,7 +23,6 @@ public class MainActivityPresenter implements IMainActivityPresenter
     private IMainActivityView m_view = null;
     private IStreamingSourcesManager m_streamingSourcesMgr = null;
     private Context m_context = null;
-    RoviRunnerMediaPlayer m_player;
 
     public MainActivityPresenter( IMainActivityView view, 
                                   Context context )
