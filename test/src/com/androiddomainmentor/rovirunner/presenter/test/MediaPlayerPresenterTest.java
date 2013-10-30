@@ -2,16 +2,23 @@ package com.androiddomainmentor.rovirunner.presenter.test;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.util.ArrayList;
+
 import org.mockito.Mockito;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
+import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.Suppress;
-import com.androiddomainmentor.rovirunner.model.IRoviRunnerMediaPlayer;
+
+import com.androiddomainmentor.rovirunner.model.AudioTrackMetadata;
+import com.androiddomainmentor.rovirunner.model.ILocalSourceManager;
 import com.androiddomainmentor.rovirunner.presenter.IMediaPlayerPresenter;
 import com.androiddomainmentor.rovirunner.presenter.impl.MediaPlayerPresenter;
+import com.androiddomainmentor.rovirunner.test.Utils;
 import com.androiddomainmentor.rovirunner.view.IMediaPlayerView;
 
 // note:  test methods must be named with a "test" prefix, e.g., "testThisOrThat", 
@@ -21,7 +28,7 @@ public class MediaPlayerPresenterTest extends AndroidTestCase
 {
     private IMediaPlayerPresenter m_presenter;
     private IMediaPlayerView m_view;
-    private IRoviRunnerMediaPlayer m_player;
+    private MediaPlayer m_player;
     private Context m_context;
     private SharedPreferences m_prefs;
 
@@ -39,13 +46,13 @@ public class MediaPlayerPresenterTest extends AndroidTestCase
 
         // set up mocks
         m_view = Mockito.mock( IMediaPlayerView.class );
-        m_player = Mockito.mock( IRoviRunnerMediaPlayer.class );
+        m_player = Mockito.mock( MediaPlayer.class );
         m_context = Mockito.mock( Context.class );
         m_prefs = Mockito.mock( SharedPreferences.class );
 
         // this is what we're testing against
         m_presenter = Mockito.spy( new MediaPlayerPresenter( m_view,
-                                                             m_context, 
+                                                             m_context,
                                                              m_prefs ) );
 
         // set up mock player
@@ -66,7 +73,7 @@ public class MediaPlayerPresenterTest extends AndroidTestCase
     public void testPlayRandomSong() throws IllegalArgumentException, IllegalStateException, IOException
     {
         AssetFileDescriptor afd = Mockito.mock( AssetFileDescriptor.class );
-        Mockito.doReturn( afd ).when( m_presenter ).getRandomSongFileDescriptor();
+        Mockito.doReturn( afd ).when( m_presenter ).getRandomSong();
         Mockito.doNothing().when( m_player ).prepareAsync();
         
         m_presenter.playSong( null );
@@ -82,5 +89,18 @@ public class MediaPlayerPresenterTest extends AndroidTestCase
                .setArtistText( Mockito.anyString() );
         Mockito.verify( m_view )
                .setSongText( Mockito.anyString() );
+    }
+    
+    public void testGetRandomSong_IfNoSongsFound_ReturnsEmptyAudioTrack()
+    {
+        ILocalSourceManager mockSourceMgr = Mockito.mock(ILocalSourceManager.class);
+        m_presenter.setLocalSourceManager(mockSourceMgr);
+        Mockito.when(mockSourceMgr.getAudioTracks(Mockito.any(Context.class))).thenReturn(new ArrayList<AudioTrackMetadata>());
+        
+        AudioTrackMetadata meta = m_presenter.getRandomSong();
+        
+        assertTrue("".equals(meta.getArtist()));
+        assertTrue("".equals(meta.getTitle()));
+        assertTrue("".equals(meta.getPath()));
     }
 }

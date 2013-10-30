@@ -19,6 +19,7 @@ public class MainActivity extends Activity implements
 {
     private IMainActivityPresenter m_presenter = null;
     private Button m_buttonPlayLocalMusic = null;
+    private Button m_buttonScanLocalMusic;
     private ExpandableListView m_expListStreamMusic = null;
 
     @Override
@@ -35,13 +36,13 @@ public class MainActivity extends Activity implements
 
         // assign layout stuff to our members
         m_buttonPlayLocalMusic = (Button)findViewById( R.id.button_play_local_music );
+        m_buttonScanLocalMusic = (Button)findViewById( R.id.button_scan_local_music );
         m_expListStreamMusic = (ExpandableListView)findViewById( R.id.expandableListView_internet_music );
 
         // set event handlers
         m_buttonPlayLocalMusic.setOnClickListener( this );
-
+        m_buttonScanLocalMusic.setOnClickListener( this );
         m_expListStreamMusic.setAdapter( m_presenter.getStreamingSourcesAdapter() );
-
     }
 
     @Override
@@ -59,6 +60,9 @@ public class MainActivity extends Activity implements
     {
         switch ( v.getId() )
         {
+        case R.id.button_scan_local_music:
+            m_presenter.rescanLocalMusic( this );
+            break;
         case R.id.button_play_local_music:
             m_presenter.playLocalMusic( this );
             break;

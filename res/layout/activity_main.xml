@@ -8,15 +8,29 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
-        <Button
-            android:id="@+id/button_play_local_music"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="@string/play_local_files"
-            android:padding="10dp"
-            />
-        
+    <LinearLayout
+        android:id="@+id/linearLayoutForButtons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" >
+	        <Button
+	            android:id="@+id/button_play_local_music"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="50"
+	            android:text="@string/play_local_files"
+	            android:padding="10dp"
+	            />
+	        <Button
+	            android:id="@+id/button_scan_local_music"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="50"
+	            android:text="@string/scan_local_files"
+	            android:padding="10dp"
+	            />
+    </LinearLayout>
         <TextView
             android:id="@+id/text_OR"
             android:layout_width="wrap_content"
@@ -26,7 +40,7 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
         	android:textColor="@android:color/black"
             android:padding="10dp"
-            android:layout_below="@id/button_play_local_music"
+            android:layout_below="@id/linearLayoutForButtons"
             />
 
         <ExpandableListView

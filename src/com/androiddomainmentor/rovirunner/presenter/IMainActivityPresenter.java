@@ -5,6 +5,7 @@ import android.widget.ExpandableListAdapter;
 
 public interface IMainActivityPresenter
 {
+    void rescanLocalMusic(Context context);
 
     void playLocalMusic(Context context);
 

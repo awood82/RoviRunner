@@ -5,6 +5,7 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="play_local_files">Play music from my device</string>
+    <string name="scan_local_files">Scan local music</string>
     <string name="nothing_here">Nothing here...</string>
     <string name="OR">OR</string>
     <string name="song_text">Song name</string>

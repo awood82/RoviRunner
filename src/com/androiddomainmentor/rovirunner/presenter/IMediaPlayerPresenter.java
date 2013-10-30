@@ -1,14 +1,19 @@
 package com.androiddomainmentor.rovirunner.presenter;
 
+import com.androiddomainmentor.rovirunner.model.AudioTrackMetadata;
+import com.androiddomainmentor.rovirunner.model.ILocalSourceManager;
+
 import android.content.res.AssetFileDescriptor;
+import android.media.MediaPlayer;
 import android.widget.MediaController.MediaPlayerControl;
-import com.androiddomainmentor.rovirunner.model.IRoviRunnerMediaPlayer;
 
 public interface IMediaPlayerPresenter
 {
-    IRoviRunnerMediaPlayer makeNewMediaPlayer();
-
+    MediaPlayer makeNewMediaPlayer();
+    
     MediaPlayerControl getMediaPlayerControl();
+    
+    void setLocalSourceManager(ILocalSourceManager mgr);
 
     void lifecycleStop();
 
@@ -19,10 +24,8 @@ public interface IMediaPlayerPresenter
     void lifecycleDestroy();
 
     void lifecycleResume();
+    
+    AudioTrackMetadata getRandomSong();
 
-    void playSong( String song );
-
-    AssetFileDescriptor getRandomSongFileDescriptor();
-
-    AssetFileDescriptor getSongFileDescriptor( String songFilename );
+    void playSong( AudioTrackMetadata songMetadata );
 }

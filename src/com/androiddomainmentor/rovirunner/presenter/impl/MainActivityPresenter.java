@@ -1,5 +1,6 @@
 package com.androiddomainmentor.rovirunner.presenter.impl;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +8,9 @@ import java.util.Map;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.media.MediaScannerConnection;
+import android.os.Environment;
 import android.widget.ExpandableListAdapter;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.Toast;
@@ -23,6 +27,7 @@ public class MainActivityPresenter implements IMainActivityPresenter
     private IMainActivityView m_view = null;
     private IStreamingSourcesManager m_streamingSourcesMgr = null;
     private Context m_context = null;
+    MediaPlayer m_player;
 
     public MainActivityPresenter( IMainActivityView view, 
                                   Context context )
@@ -30,6 +35,16 @@ public class MainActivityPresenter implements IMainActivityPresenter
         m_view = view;
         m_context = context;
         m_streamingSourcesMgr = new StreamingSourcesManager();
+    }
+    @Override
+    public void rescanLocalMusic(Context context)
+    {
+        File externalSD = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
+        MediaScannerConnection.scanFile(context,
+                new String[] { externalSD.getPath() },
+                null,
+                null
+        );
     }
 
     @Override
