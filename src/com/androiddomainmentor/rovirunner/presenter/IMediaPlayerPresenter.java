@@ -1,11 +1,9 @@
 package com.androiddomainmentor.rovirunner.presenter;
 
-import com.androiddomainmentor.rovirunner.model.AudioTrackMetadata;
-import com.androiddomainmentor.rovirunner.model.ILocalSourceManager;
-
-import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.widget.MediaController.MediaPlayerControl;
+import com.androiddomainmentor.rovirunner.model.ILocalSourceManager;
+import com.androiddomainmentor.rovirunner.model.impl.AudioTrackMetadata;
 
 public interface IMediaPlayerPresenter
 {

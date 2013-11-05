@@ -1,4 +1,4 @@
-package com.androiddomainmentor.rovirunner.model;
+package com.androiddomainmentor.rovirunner.model.impl;
 
 public class AudioTrackMetadata
 {

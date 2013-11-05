@@ -1,10 +1,11 @@
 package com.androiddomainmentor.rovirunner.model;
 
-import java.util.ArrayList;
+import java.util.List;
+import com.androiddomainmentor.rovirunner.model.impl.AudioTrackMetadata;
 
 import android.content.Context;
 
 public interface ILocalSourceManager
 {
-    public ArrayList<AudioTrackMetadata> getAudioTracks(Context context);
+    public List<AudioTrackMetadata> getAudioTracks(Context context);
 }

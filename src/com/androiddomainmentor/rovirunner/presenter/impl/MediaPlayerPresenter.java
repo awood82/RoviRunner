@@ -1,21 +1,17 @@
 package com.androiddomainmentor.rovirunner.presenter.impl;
 
-import java.io.File;
-import java.io.FileDescriptor;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.AssetFileDescriptor;
-import android.content.res.AssetManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.widget.MediaController.MediaPlayerControl;
-import com.androiddomainmentor.rovirunner.model.AudioTrackMetadata;
 import com.androiddomainmentor.rovirunner.model.ILocalSourceManager;
+import com.androiddomainmentor.rovirunner.model.impl.AudioTrackMetadata;
 import com.androiddomainmentor.rovirunner.model.impl.LocalSourceManager;
 import com.androiddomainmentor.rovirunner.presenter.IMediaPlayerPresenter;
 import com.androiddomainmentor.rovirunner.view.IMediaPlayerView;
@@ -118,8 +114,9 @@ public class MediaPlayerPresenter implements
         {
             return;
         }
-        
-        if ( RANDOM_SONG == songMetadata || "".equals(songMetadata.getPath()) )
+
+        if (    RANDOM_SONG == songMetadata 
+             || "".equals( songMetadata.getPath() ) )
         {
             songMetadata = getRandomSong();
         }
@@ -133,12 +130,12 @@ public class MediaPlayerPresenter implements
             m_mediaPlayer.prepareAsync();
 
             // Update the view with new metadata
-            updateViewWithSongInfo(songMetadata);
+            updateViewWithSongInfo( songMetadata );
             
             // TODO [2013-10-24 KW] I'm putting this here to demonstrate that we need to 
             // store the song filename in preferences every time a new one is played.
-            saveLastPlayedSongMetadata(songMetadata);
-            saveLastPlayedSongPosition(0);
+            saveLastPlayedSongMetadata( songMetadata );
+            saveLastPlayedSongPosition( 0 );
         }
         catch ( IllegalArgumentException e )
         {
@@ -160,46 +157,52 @@ public class MediaPlayerPresenter implements
     @Override
     public AudioTrackMetadata getRandomSong()
     {
-        ArrayList<AudioTrackMetadata> tracks = m_songsMgr.getAudioTracks(m_context);
+        List<AudioTrackMetadata> tracks = m_songsMgr.getAudioTracks( m_context );
 
         // Check that at least one song was found
-        if (tracks.size() == 0)
+        if ( tracks.size() == 0 )
         {
             return new AudioTrackMetadata();
         }
-        
+
         // Choose a random song from the list
         Random rng = new Random();
-        int nextSong = rng.nextInt(tracks.size());
-        
-        return tracks.get(nextSong);
+        int nextSong = rng.nextInt( tracks.size() );
+
+        return tracks.get( nextSong );
     }
 	
-	public void updateViewWithSongInfo(AudioTrackMetadata meta)
+    public void updateViewWithSongInfo( AudioTrackMetadata meta )
     {
-        m_view.setArtistText(meta.getArtist());
-        m_view.setSongText(meta.getTitle());
+        m_view.setArtistText( meta.getArtist() );
+        m_view.setSongText( meta.getTitle() );
     }
-	
+
     private AudioTrackMetadata loadLastPlayedSongMetadata()
     {
         AudioTrackMetadata songMetadata = new AudioTrackMetadata();
-        songMetadata.setPath( m_prefs.getString( KEY_LAST_PLAYED_SONG_PATH, "" ) );
-        songMetadata.setArtist( m_prefs.getString( KEY_LAST_PLAYED_SONG_ARTIST, "" ) );
-        songMetadata.setTitle( m_prefs.getString( KEY_LAST_PLAYED_SONG_TITLE, "" ) );
-        
+        songMetadata.setPath( m_prefs.getString( KEY_LAST_PLAYED_SONG_PATH,
+                                                 "" ) );
+        songMetadata.setArtist( m_prefs.getString( KEY_LAST_PLAYED_SONG_ARTIST,
+                                                   "" ) );
+        songMetadata.setTitle( m_prefs.getString( KEY_LAST_PLAYED_SONG_TITLE,
+                                                  "" ) );
+
         return songMetadata;
     }
-    
-    private void saveLastPlayedSongMetadata(AudioTrackMetadata songMetadata)
+
+    private void saveLastPlayedSongMetadata( AudioTrackMetadata songMetadata )
     {
         SharedPreferences.Editor editor = m_prefs.edit();
-        editor.putString( KEY_LAST_PLAYED_SONG_PATH, songMetadata.getPath() );
-        editor.putString( KEY_LAST_PLAYED_SONG_ARTIST, songMetadata.getArtist() );
-        editor.putString( KEY_LAST_PLAYED_SONG_TITLE, songMetadata.getTitle() );
+        editor.putString( KEY_LAST_PLAYED_SONG_PATH,
+                          songMetadata.getPath() );
+        editor.putString( KEY_LAST_PLAYED_SONG_ARTIST,
+                          songMetadata.getArtist() );
+        editor.putString( KEY_LAST_PLAYED_SONG_TITLE,
+                          songMetadata.getTitle() );
         editor.commit();
     }
-    
+
     private int loadLastPlayedSongPosition()
     {
         int lastPlayedSongPosition = m_prefs.getInt( KEY_LAST_PLAYED_SONG_POSITION, 0 );
@@ -207,15 +210,14 @@ public class MediaPlayerPresenter implements
         return lastPlayedSongPosition;
     }
     
-    private void saveLastPlayedSongPosition(int currentPosition)
+    private void saveLastPlayedSongPosition( int currentPosition )
     {
         // Store current song position
         SharedPreferences.Editor editor = m_prefs.edit();
-        editor.putInt( KEY_LAST_PLAYED_SONG_POSITION, currentPosition );
+        editor.putInt( KEY_LAST_PLAYED_SONG_POSITION,
+                       currentPosition );
         editor.commit();
     }
-    
-    
 
     @Override
     public boolean canPause()
@@ -290,11 +292,11 @@ public class MediaPlayerPresenter implements
         int currentPosition = m_mediaPlayer.getCurrentPosition();
         // We don't want to resume at the end of the song on next start if we're within 1 second of the end
         int duration = m_mediaPlayer.getDuration();
-        if ( currentPosition > duration - 1000)
+        if ( currentPosition > duration - 1000 )
         {
             currentPosition = 0;
         }
-        saveLastPlayedSongPosition(currentPosition);
+        saveLastPlayedSongPosition( currentPosition );
 
         // Shutdown the media player
         m_mediaPlayer.stop();

@@ -3,9 +3,7 @@ package com.androiddomainmentor.rovirunner.presenter.test;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import org.mockito.Mockito;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
@@ -13,12 +11,10 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.Suppress;
-
-import com.androiddomainmentor.rovirunner.model.AudioTrackMetadata;
 import com.androiddomainmentor.rovirunner.model.ILocalSourceManager;
+import com.androiddomainmentor.rovirunner.model.impl.AudioTrackMetadata;
 import com.androiddomainmentor.rovirunner.presenter.IMediaPlayerPresenter;
 import com.androiddomainmentor.rovirunner.presenter.impl.MediaPlayerPresenter;
-import com.androiddomainmentor.rovirunner.test.Utils;
 import com.androiddomainmentor.rovirunner.view.IMediaPlayerView;
 
 // note:  test methods must be named with a "test" prefix, e.g., "testThisOrThat", 
