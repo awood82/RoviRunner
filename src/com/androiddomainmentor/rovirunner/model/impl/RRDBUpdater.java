@@ -127,7 +127,11 @@ public class RRDBUpdater implements IRRDBUpdater
         {
             m_rrdbQueryAsync = new RRDBQueryAsync( m_context );
         }
-        
-        m_rrdbQueryAsync.execute( results );
+
+        // can't run when it's already running
+        if ( m_rrdbQueryAsync.getStatus() != AsyncTask.Status.RUNNING )
+        {
+            m_rrdbQueryAsync.execute( results );
+        }
     }
 }

@@ -18,7 +18,7 @@ public class RRDBHelper extends SQLiteOpenHelper implements IRRDBHelper
         + "(" 
         + SongInfo._ID + " INTEGER PRIMARY KEY," 
         + SongInfo.COLUMN_NAME_SONGID + TEXT_TYPE + COMMA_SEP 
-        + SongInfo.COLUMN_NAME_BPM + TEXT_TYPE + COMMA_SEP 
+        + SongInfo.COLUMN_NAME_BPM + TEXT_TYPE  
         + " )";
     private static final String SQL_DELETE_ENTRIES = 
         "DROP TABLE IF EXISTS " + SongInfo.TABLE_NAME;

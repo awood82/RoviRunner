@@ -70,6 +70,12 @@ public class MediaStoreObserver extends ContentObserver implements IMediaStoreOb
     public void onChange( boolean selfChange, 
                           Uri uri )
     {
+        // TODO [2014-01-13 KW] why would this be null?
+        if ( null == uri )
+        {
+            uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        }
+        
         // query the DB asynchronously
         // TODO [2013-12-09 KW] can I get a cursor of removed rows?
         String[] projectionColumns = { MediaStore.Audio.Media._ID, 

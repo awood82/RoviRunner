@@ -135,7 +135,6 @@ public class MediaPlayerPresenter implements
             // TODO [2013-10-24 KW] I'm putting this here to demonstrate that we need to 
             // store the song filename in preferences every time a new one is played.
             saveLastPlayedSongMetadata( songMetadata );
-            saveLastPlayedSongPosition( 0 );
         }
         catch ( IllegalArgumentException e )
         {

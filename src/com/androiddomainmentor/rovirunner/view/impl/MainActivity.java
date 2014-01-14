@@ -1,14 +1,16 @@
 package com.androiddomainmentor.rovirunner.view.impl;
 
 import android.app.Activity;
+import android.database.ContentObserver;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ExpandableListView;
-
 import com.androiddomainmentor.rovirunner.R;
+import com.androiddomainmentor.rovirunner.model.impl.MediaStoreObserver;
 import com.androiddomainmentor.rovirunner.presenter.IMainActivityPresenter;
 import com.androiddomainmentor.rovirunner.presenter.impl.MainActivityPresenter;
 import com.androiddomainmentor.rovirunner.view.IMainActivityView;
@@ -21,6 +23,7 @@ public class MainActivity extends Activity implements
     private Button m_buttonPlayLocalMusic = null;
     private Button m_buttonScanLocalMusic;
     private ExpandableListView m_expListStreamMusic = null;
+    private ContentObserver m_mediaStoreObserver = null;
 
     @Override
     protected void onCreate( Bundle savedInstanceState )
@@ -87,6 +90,9 @@ public class MainActivity extends Activity implements
     {
         // TODO Auto-generated method stub
         super.onPause();
+
+        // unregister mediastore observer
+        getContentResolver().unregisterContentObserver( m_mediaStoreObserver );
     }
 
     @Override
@@ -101,6 +107,13 @@ public class MainActivity extends Activity implements
     {
         // TODO Auto-generated method stub
         super.onResume();
+        
+        // register mediastore observer
+        m_mediaStoreObserver = new MediaStoreObserver( null, 
+                                                       getApplicationContext() );
+        getContentResolver().registerContentObserver( MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, 
+                                                      true, 
+                                                      m_mediaStoreObserver );
     }
 
     @Override
